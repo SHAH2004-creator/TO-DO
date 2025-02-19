@@ -1,65 +1,96 @@
-import React, { useState } from 'react';
+document.addEventListener("DOMContentLoaded", () => {
+  const taskForm = document.getElementById("task-form");
+  const taskInput = document.getElementById("task-input");
+  const prioritySelect = document.getElementById("priority-select");
+  const taskList = document.getElementById("task-list");
+  const clearTasksButton = document.getElementById("clear-tasks");
 
-function TodoApp() {
-  // State for managing tasks
-  const [tasks, setTasks] = useState([]);
-  const [taskInput, setTaskInput] = useState('');
+  // Load tasks from localStorage
+  let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-  // Function to add a new task
-  const addTask = () => {
-    if (taskInput.trim() !== '') {
-      setTasks([
-        ...tasks,
-        { text: taskInput, completed: false },
-      ]);
-      setTaskInput(''); // Clear the input
-    }
+  const saveTasks = () => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   };
 
-  // Function to toggle task completion
-  const toggleTaskCompletion = (index) => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index].completed = !updatedTasks[index].completed;
-    setTasks(updatedTasks);
+  const renderTasks = () => {
+    taskList.innerHTML = "";
+
+    tasks.forEach((task) => {
+      const li = document.createElement("li");
+      li.className = `task-item ${task.priority} ${
+        task.completed ? "completed" : ""
+      }`;
+
+      const span = document.createElement("span");
+      span.textContent = task.text;
+      li.appendChild(span);
+
+      // Buttons
+      const buttonContainer = document.createElement("div");
+      buttonContainer.className = "task-buttons";
+
+      const completeButton = document.createElement("button");
+      completeButton.textContent = task.completed ? "Undo" : "Complete";
+      completeButton.className = "complete";
+      completeButton.addEventListener("click", () => {
+        task.completed = !task.completed;
+        saveTasks();
+        renderTasks();
+      });
+      buttonContainer.appendChild(completeButton);
+
+      const editButton = document.createElement("button");
+      editButton.textContent = "Edit";
+      editButton.className = "edit";
+      editButton.addEventListener("click", () => {
+        const newText = prompt("Edit Task:", task.text);
+        if (newText !== null) {
+          task.text = newText.trim();
+          saveTasks();
+          renderTasks();
+        }
+      });
+      buttonContainer.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.className = "delete";
+      deleteButton.addEventListener("click", () => {
+        tasks = tasks.filter((t) => t !== task);
+        saveTasks();
+        renderTasks();
+      });
+      buttonContainer.appendChild(deleteButton);
+
+      li.appendChild(buttonContainer);
+      taskList.appendChild(li);
+    });
   };
 
-  // Function to delete a task
-  const deleteTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
-  };
+  // Add Task
+  taskForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  return (
-    <div className="app">
-      <header className="header">
-        <h1>My Colorful To-Do List</h1>
-      </header>
+    const newTask = {
+      text: taskInput.value.trim(),
+      priority: prioritySelect.value,
+      completed: false,
+    };
 
-      <div className="input-section">
-        <input
-          type="text"
-          value={taskInput}
-          onChange={(e) => setTaskInput(e.target.value)}
-          placeholder="Add your task..."
-        />
-        <button onClick={addTask}>Add Task</button>
-      </div>
+    tasks.push(newTask);
+    saveTasks();
+    renderTasks();
 
-      <div className="todo-list">
-        {tasks.map((task, index) => (
-          <div key={index} className="todo-item">
-            <span
-              className={task.completed ? 'completed' : ''}
-              onClick={() => toggleTaskCompletion(index)}
-            >
-              {task.text}
-            </span>
-            <button onClick={() => deleteTask(index)}>Delete</button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+    taskInput.value = "";
+    prioritySelect.value = "medium";
+  });
 
-export default TodoApp;
+  // Clear All Tasks
+  clearTasksButton.addEventListener("click", () => {
+    tasks = [];
+    saveTasks();
+    renderTasks();
+  });
+
+  renderTasks();
+});
