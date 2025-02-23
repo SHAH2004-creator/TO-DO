@@ -11,8 +11,9 @@ function TodoApp() {
   const [priority, setPriority] = useState("medium");
   const [shake, setShake] = useState(false);
 
-  // Save tasks to localStorage whenever `tasks` changes
+  // Save tasks to localStorage and log them whenever `tasks` changes
   useEffect(() => {
+    console.log("Updated Tasks:", tasks); // Print tasks in VS Code terminal
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
@@ -22,7 +23,7 @@ function TodoApp() {
     setShake(false);
   };
 
-  // Handle priority change
+  // Handle priority change (for new tasks)
   const handlePriorityChange = (e) => {
     setPriority(e.target.value);
   };
@@ -63,6 +64,15 @@ function TodoApp() {
     setTasks(
       tasks.map((task) =>
         task.id === taskId ? { ...task, text: newText } : task
+      )
+    );
+  };
+
+  // Update task priority
+  const updateTaskPriority = (taskId, newPriority) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, priority: newPriority } : task
       )
     );
   };
@@ -129,7 +139,16 @@ function TodoApp() {
                     />
                   </td>
                   <td className="priority-label-cell">
-                    <span className="priority-label">Priority: {task.priority}</span>
+                    {/* Dropdown to Change Priority */}
+                    <select
+                      value={task.priority}
+                      onChange={(e) => updateTaskPriority(task.id, e.target.value)}
+                      className="priority-select"
+                    >
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
                   </td>
                   <td className="task-action-cell">
                     <button
