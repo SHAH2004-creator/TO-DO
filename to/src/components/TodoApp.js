@@ -1,65 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function TodoApp() {
+  // Load tasks from localStorage when the app starts
   const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem('task');
-    return savedTasks ? JSON.parse(savedTasks) : [];
+    const savedTasks = localStorage.getItem("tasks");
+    return savedTasks ? JSON.parse(savedTasks) : []; // Convert string to array
   });
-  const [newTask, setNewTask] = useState('');
-  const [priority, setPriority] = useState('medium');
-  const [shake, setShake] = useState(false); // For animation feedback
 
+  const [newTask, setNewTask] = useState("");
+  const [priority, setPriority] = useState("medium");
+  const [shake, setShake] = useState(false);
+
+  // Save tasks to localStorage whenever `tasks` changes
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  // Handle input change for the new task
+  // Handle input change
   const handleInputChange = (e) => {
     setNewTask(e.target.value);
-    setShake(false); // Reset shake animation
+    setShake(false);
   };
 
-  // Handle priority change for new tasks
+  // Handle priority change
   const handlePriorityChange = (e) => {
     setPriority(e.target.value);
   };
 
-  // Add a new task
+  // Add new task
   const handleAddTask = (e) => {
     e.preventDefault();
-    if (newTask.trim() === '') {
-      setShake(true); // Trigger shake animation for empty input
+    if (newTask.trim() === "") {
+      setShake(true);
       return;
     }
 
-    setTasks([...tasks, {
-      id: Date.now(),
-      text: newTask,
-      completed: false,
-      priority: priority
-    }]);
-    setNewTask('');
-    setPriority('medium');
-    setShake(false); // Reset shake after successful add
+    setTasks([
+      ...tasks,
+      {
+        id: Date.now(),
+        text: newTask,
+        completed: false,
+        priority: priority,
+      },
+    ]);
+    setNewTask("");
+    setPriority("medium");
+    setShake(false);
   };
 
-  // Mark tasks as completed or uncompleted
+  // Toggle task completion
   const toggleTaskCompletion = (taskId) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
   };
 
-  // Update an existing task's text
+  // Update task text
   const updateTask = (taskId, newText) => {
-    setTasks(tasks.map(task =>
-      task.id === taskId ? { ...task, text: newText } : task
-    ));
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, text: newText } : task
+      )
+    );
   };
 
-  // Delete a specific task
+  // Delete task
   const deleteTask = (taskId) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+    setTasks(tasks.filter((task) => task.id !== taskId));
   };
 
   // Remove all tasks
@@ -71,7 +81,7 @@ function TodoApp() {
     <div className="todo-app">
       <h1 className="todo-title">To-Do List</h1>
 
-      <form onSubmit={handleAddTask} className={`task-form ${shake ? 'shake' : ''}`}>
+      <form onSubmit={handleAddTask} className={`task-form ${shake ? "shake" : ""}`}>
         <input
           type="text"
           value={newTask}
@@ -79,11 +89,7 @@ function TodoApp() {
           placeholder="Enter a task"
           className="task-input"
         />
-        <select
-          value={priority}
-          onChange={handlePriorityChange}
-          className="priority-select"
-        >
+        <select value={priority} onChange={handlePriorityChange} className="priority-select">
           <option value="high">High</option>
           <option value="medium">Medium</option>
           <option value="low">Low</option>
@@ -99,8 +105,11 @@ function TodoApp() {
                 <td colSpan="4" className="no-tasks">No tasks yet. Add one above.</td>
               </tr>
             ) : (
-              tasks.map(task => (
-                <tr key={task.id} className={`task-item priority-${task.priority} ${task.completed ? 'completed' : ''}`}>
+              tasks.map((task) => (
+                <tr
+                  key={task.id}
+                  className={`task-item priority-${task.priority} ${task.completed ? "completed" : ""}`}
+                >
                   <td className="task-checkbox-cell">
                     <input
                       type="checkbox"
