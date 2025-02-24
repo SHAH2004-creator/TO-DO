@@ -11,6 +11,9 @@ function TodoApp() {
   const [priority, setPriority] = useState("medium");
   const [shake, setShake] = useState(false);
 
+  // Priority Order (High > Medium > Low)
+  const priorityOrder = { high: 1, medium: 2, low: 3 };
+
   // Save tasks to localStorage and log them whenever `tasks` changes
   useEffect(() => {
     console.log("Updated Tasks:", tasks); // Print tasks in VS Code terminal
@@ -87,6 +90,11 @@ function TodoApp() {
     setTasks([]);
   };
 
+  // Sort tasks by priority
+  const sortedTasks = [...tasks].sort((a, b) => {
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  });
+
   return (
     <div className="todo-app">
       <h1 className="todo-title">To-Do List</h1>
@@ -110,12 +118,12 @@ function TodoApp() {
       <div className="task-table-container">
         <table className="task-table">
           <tbody>
-            {tasks.length === 0 ? (
+            {sortedTasks.length === 0 ? (
               <tr>
                 <td colSpan="4" className="no-tasks">No tasks yet. Add one above.</td>
               </tr>
             ) : (
-              tasks.map((task) => (
+              sortedTasks.map((task) => (
                 <tr
                   key={task.id}
                   className={`task-item priority-${task.priority} ${task.completed ? "completed" : ""}`}
@@ -166,7 +174,7 @@ function TodoApp() {
         </table>
       </div>
 
-      {tasks.length > 0 && (
+      {sortedTasks.length > 0 && (
         <button onClick={removeAllTasks} className="remove-all-button" title="Clear all tasks">
           Remove All
         </button>
