@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/pythoneeer-TO-DO/static/css/main.466aba9b.css",
-    "main.js": "/pythoneeer-TO-DO/static/js/main.9f2a7637.js",
+    "main.css": "/pythoneeer-TO-DO/static/css/main.91f898a8.css",
+    "main.js": "/pythoneeer-TO-DO/static/js/main.391ef965.js",
     "index.html": "/pythoneeer-TO-DO/index.html",
-    "main.466aba9b.css.map": "/pythoneeer-TO-DO/static/css/main.466aba9b.css.map",
-    "main.9f2a7637.js.map": "/pythoneeer-TO-DO/static/js/main.9f2a7637.js.map"
+    "main.91f898a8.css.map": "/pythoneeer-TO-DO/static/css/main.91f898a8.css.map",
+    "main.391ef965.js.map": "/pythoneeer-TO-DO/static/js/main.391ef965.js.map"
   },
   "entrypoints": [
-    "static/css/main.466aba9b.css",
-    "static/js/main.9f2a7637.js"
+    "static/css/main.91f898a8.css",
+    "static/js/main.391ef965.js"
   ]
 }
